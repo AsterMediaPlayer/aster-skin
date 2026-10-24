@@ -205,15 +205,46 @@ html.layout-tv .itemDetailPage .detailRibbon {
     align-items: flex-start;
     height: auto;
     margin-top: 0;
-    padding-left: max(3.3%, env(safe-area-inset-left)) !important;
-    padding-right: max(3.3%, env(safe-area-inset-right)) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
-html.layout-desktop .itemDetailPage .detailPagePrimaryContent,
-html.layout-tv .itemDetailPage .detailPagePrimaryContent {
-    padding-left: max(3.3%, env(safe-area-inset-left)) !important;
-    padding-right: max(3.3%, env(safe-area-inset-right)) !important;
+/* Section order, as in the app: title and buttons, the overview, then
+   Episodes (with its season chips), then the rest (air day, tags, links,
+   people, studios, genres), then the rows below.
+   Jellyfin splits these across two containers (primary: overview, tags,
+   people; secondary: episodes, cast, more like this), which CSS can't
+   reorder across. So the containers in between are flattened with
+   display: contents, every section becomes a flex item of
+   .detailPageWrapperContainer (a flex column), and `order` sorts them.
+   The page margin moves from the containers to the wrapper. */
+html.layout-desktop .itemDetailPage .detailPageWrapperContainer,
+html.layout-tv .itemDetailPage .detailPageWrapperContainer {
+    display: flex;
+    flex-direction: column;
+    padding-left: max(3.3%, env(safe-area-inset-left));
+    padding-right: max(3.3%, env(safe-area-inset-right));
+    padding-bottom: 5em;
 }
+
+html.layout-desktop .itemDetailPage :is(.detailPagePrimaryContainer, .detailPagePrimaryContent, .detailSection, .detailSectionContent, .detailPageSecondaryContainer),
+html.layout-tv .itemDetailPage :is(.detailPagePrimaryContainer, .detailPagePrimaryContent, .detailSection, .detailSectionContent, .detailPageSecondaryContainer) {
+    display: contents;
+}
+
+/* 1 title and buttons; 2 track pickers; 3 overview; 4 Next Up;
+   5 Episodes and other child lists; 6 details; 7 people, studios, genres;
+   8 everything in the secondary container (cast, more like this, ...). */
+.itemDetailPage .detailPageSecondaryContainer > * { order: 8; }
+.itemDetailPage .detailSectionContent > * { order: 6; }
+.itemDetailPage .detailSection > * { order: 6; }
+.itemDetailPage .detailRibbon { order: 1; }
+.itemDetailPage .trackSelections,
+.itemDetailPage .recordingFields { order: 2; }
+.itemDetailPage .detailSectionContent > :is(.itemGenres, .tagline, .overview, .overview-controls) { order: 3; }
+.itemDetailPage .nextUpSection { order: 4; }
+.itemDetailPage :is(#childrenCollapsible, #listChildrenCollapsible, #seriesTimerScheduleSection, .programGuideSection, .collectionItems) { order: 5; }
+.itemDetailPage .itemDetailsGroup { order: 7; }
 
 /* The clear logo sits above the title, on the left, as in the app. */
 html.layout-desktop .itemDetailPage .detailLogo,
