@@ -178,7 +178,7 @@ body *:not(.material-icons):not([class*="material-icons-"]):not(.MuiIcon-root) {
 .layout-tv .itemDetailPage .detailPageWrapperContainer {
     position: relative;
     z-index: 1;
-    margin-top: 26vh;
+    margin-top: 28vh;
     background: transparent;
 }
 
@@ -211,18 +211,18 @@ html.layout-tv .itemDetailPage .detailRibbon {
 
 html.layout-desktop .itemDetailPage .detailPagePrimaryContent,
 html.layout-tv .itemDetailPage .detailPagePrimaryContent {
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: max(3.3%, env(safe-area-inset-left)) !important;
+    padding-right: max(3.3%, env(safe-area-inset-right)) !important;
 }
 
 /* The clear logo sits above the title, on the left, as in the app. */
 html.layout-desktop .itemDetailPage .detailLogo,
 html.layout-tv .itemDetailPage .detailLogo {
-    top: 12vh;
+    top: 9vh;
     left: max(3.3%, env(safe-area-inset-left));
     right: auto;
     width: 30vw;
-    height: 16vh;
+    height: 15vh;
     z-index: 1;
     background-position: left bottom;
 }
@@ -232,6 +232,15 @@ html.layout-tv [dir="rtl"] .itemDetailPage .detailLogo {
     left: auto;
     right: max(3.3%, env(safe-area-inset-right));
     background-position: right bottom;
+}
+
+/* With a logo, the logo stands in for the big heading, as in the app: a
+   film's or show's own title, or an episode's show name. An episode keeps
+   its own title (the h3) under its show's logo. The logo div loses its
+   .hide class when the item has one (renderLogo in itemDetails/index.js). */
+html.layout-desktop .itemDetailPage:has(.detailLogo:not(.hide)) .nameContainer h1,
+html.layout-tv .itemDetailPage:has(.detailLogo:not(.hide)) .nameContainer h1 {
+    display: none;
 }
 
 /* Series name above, large and grey; the title below, large and white. */
@@ -260,6 +269,7 @@ html.layout-tv [dir="rtl"] .itemDetailPage .detailLogo {
     font-size: 1.05em;
 }
 
+.itemDetailPage .overview,
 .itemDetailPage .itemOverview {
     max-width: 52em;
     font-size: 1.1em;
