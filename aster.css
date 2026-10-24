@@ -27,6 +27,8 @@
     --aster-text: #fff;
     --aster-text-secondary: rgba(255, 255, 255, 0.6);
     --aster-radius: 12px;
+    /* Aster's accent is white; the Aster Aurora plugin reads this for focus rings and progress. */
+    --aster-accent: #fff;
     --aster-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
         "Helvetica Neue", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
 
@@ -87,8 +89,10 @@ body *:not(.material-icons):not([class*="material-icons-"]):not(.MuiIcon-root) {
 
 /* The newer (MUI) header, used on Home, is fully transparent once the page
    scrolls, so its links ran over the rows beneath. A shade from the top
-   keeps them readable and still lets a hero's artwork show through. */
-html body .MuiAppBar-root.MuiAppBar-colorDefault.MuiPaper-root {
+   keeps them readable. With the Aster Aurora plugin's Home banner, the
+   header stays clear over the art until the page scrolls (.au-scrolled). */
+html:not(.au-has-hero) body .MuiAppBar-root.MuiAppBar-colorDefault.MuiPaper-root,
+html.au-scrolled body .MuiAppBar-root.MuiAppBar-colorDefault.MuiPaper-root {
     background-image: linear-gradient(to bottom, rgba(20, 20, 20, 0.95) 0%, rgba(20, 20, 20, 0.85) 70%, rgba(20, 20, 20, 0) 100%) !important;
 }
 
@@ -416,6 +420,24 @@ html.layout-tv .itemDetailPage:has(.detailLogo:not(.hide)) .nameContainer h1 {
 .itemDetailPage .mainDetailButtons .btnPlay:hover,
 .itemDetailPage .mainDetailButtons .btnReplay:hover {
     background: #e8e8e8;
+}
+
+/* With Resume showing, "play from the start" is a round restart icon beside
+   it, as in the app, not a second white pill. */
+.itemDetailPage .mainDetailButtons .btnPlay:not(.hide) ~ .btnReplay {
+    width: 3.2em;
+    padding: 0 !important;
+    border-radius: 50%;
+    background: var(--aster-fill);
+    color: var(--aster-text);
+}
+
+.itemDetailPage .mainDetailButtons .btnPlay:not(.hide) ~ .btnReplay:hover {
+    background: var(--aster-fill-hover);
+}
+
+.itemDetailPage .mainDetailButtons .btnPlay:not(.hide) ~ .btnReplay::after {
+    content: none;
 }
 
 /* Cast & Crew (and guest stars, and people anywhere else): round photos,
