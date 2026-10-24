@@ -85,6 +85,35 @@ body *:not(.material-icons):not([class*="material-icons-"]):not(.MuiIcon-root) {
     backdrop-filter: blur(24px) saturate(1.4);
 }
 
+/* The newer (MUI) header, used on Home, is fully transparent once the page
+   scrolls, so its links ran over the rows beneath. A shade from the top
+   keeps them readable and still lets a hero's artwork show through. */
+html body .MuiAppBar-root.MuiAppBar-colorDefault.MuiPaper-root {
+    background-image: linear-gradient(to bottom, rgba(20, 20, 20, 0.95) 0%, rgba(20, 20, 20, 0.85) 70%, rgba(20, 20, 20, 0) 100%) !important;
+}
+
+/* -------------------------------------------------------------------------
+ * 3b. Buttons
+ * Jellyfin's raised buttons (Home's Live TV shortcuts, dialog buttons) as
+ * pills. Primary (submit) buttons keep the white accent.
+ * ---------------------------------------------------------------------- */
+
+.emby-button.raised {
+    border-radius: 999px;
+    padding-left: 1.3em;
+    padding-right: 1.3em;
+    font-weight: 600;
+}
+
+.emby-button.raised:not(.button-submit) {
+    background: var(--aster-fill);
+    color: var(--aster-text);
+}
+
+.emby-button.raised:not(.button-submit):hover {
+    background: var(--aster-fill-hover);
+}
+
 /* -------------------------------------------------------------------------
  * 4. Tabs as a segmented control
  * The pill-shaped switcher at the top of Live TV in the app.
@@ -302,6 +331,22 @@ html.layout-tv .itemDetailPage:has(.detailLogo:not(.hide)) .nameContainer h1 {
     font-size: 1.6em;
     font-weight: 700;
     color: var(--aster-text);
+}
+
+.itemDetailPage .tagline {
+    margin: 1em 0 0;
+    font-size: 1.25em;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--aster-text-secondary);
+}
+
+/* Video, Audio and Subtitles pickers: filled, rounded, borderless. */
+.itemDetailPage .trackSelections select {
+    border: 0;
+    border-radius: 10px;
+    background-color: var(--aster-fill);
+    padding: 0.45em 2em 0.45em 0.8em;
 }
 
 .itemDetailPage .itemMiscInfo {
