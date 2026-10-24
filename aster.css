@@ -1,0 +1,368 @@
+/*
+ * Aster skin for Jellyfin
+ * https://github.com/AsterMediaPlayer/aster-skin
+ *
+ * Makes Jellyfin's web interface look like the Aster app: near-black
+ * backgrounds, the system font, white focus, rounded cards, a full-screen
+ * title page with pill buttons, round cast photos and a rounded guide.
+ *
+ * Written against jellyfin-web v12.1 (fae41f3). Jellyfin's class names can
+ * change between releases; each section below names what it targets.
+ *
+ * Not affiliated with or endorsed by the Jellyfin project.
+ */
+
+/* -------------------------------------------------------------------------
+ * 1. Palette
+ * Jellyfin 12 builds its colours as CSS variables (prefix "jf") under
+ * [data-theme="..."] on <html>. :root[data-theme] outranks that selector,
+ * so this applies whichever built-in theme the user has picked.
+ * ---------------------------------------------------------------------- */
+
+:root[data-theme] {
+    --aster-bg: #141414;
+    --aster-surface: #232325;
+    --aster-fill: rgba(255, 255, 255, 0.1);
+    --aster-fill-hover: rgba(255, 255, 255, 0.2);
+    --aster-text: #fff;
+    --aster-text-secondary: rgba(255, 255, 255, 0.6);
+    --aster-radius: 12px;
+    --aster-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "Helvetica Neue", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+
+    --jf-palette-background-default: var(--aster-bg);
+    --jf-palette-background-defaultChannel: 20 20 20;
+    --jf-palette-background-paper: var(--aster-surface);
+    --jf-palette-background-paperChannel: 35 35 37;
+    --jf-palette-text-primary: var(--aster-text);
+    --jf-palette-text-secondary: var(--aster-text-secondary);
+    --jf-palette-divider: rgba(255, 255, 255, 0.08);
+
+    /* Aster's accent is white: focus, progress and selection are white,
+       with black text on top. */
+    --jf-palette-primary-main: #fff;
+    --jf-palette-primary-mainChannel: 255 255 255;
+    --jf-palette-primary-dark: #d6d6d6;
+    --jf-palette-primary-light: #fff;
+    --jf-palette-primary-contrastText: #000;
+    --jf-palette-secondary-main: #fff;
+    --jf-palette-secondary-contrastText: #000;
+
+    --jf-palette-AppBar-defaultBg: rgba(20, 20, 20, 0.72);
+    --jf-palette-AppBar-transparentBg: rgba(20, 20, 20, 0.4);
+    --jf-palette-AppBar-gradient: none;
+    --jf-palette-Button-inheritContainedBg: var(--aster-fill);
+    --jf-palette-Button-inheritContainedHoverBg: var(--aster-fill-hover);
+
+    --jf-card-borderRadius: var(--aster-radius);
+}
+
+/* -------------------------------------------------------------------------
+ * 2. Type
+ * The system font (San Francisco on Apple devices), as the app uses.
+ * Icon fonts keep their own family through their more specific classes.
+ * ---------------------------------------------------------------------- */
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+    font-family: var(--aster-font) !important;
+}
+
+.sectionTitle {
+    font-weight: 700;
+    font-size: 1.45em;
+    letter-spacing: -0.01em;
+}
+
+/* -------------------------------------------------------------------------
+ * 3. Header
+ * A dark glass bar instead of a solid one.
+ * ---------------------------------------------------------------------- */
+
+.skinHeader {
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    backdrop-filter: blur(24px) saturate(1.4);
+}
+
+/* -------------------------------------------------------------------------
+ * 4. Tabs as a segmented control
+ * The pill-shaped switcher at the top of Live TV in the app.
+ * Targets .emby-tabs-slider / .emby-tab-button (elements/emby-tabs).
+ * ---------------------------------------------------------------------- */
+
+.emby-tabs-slider {
+    display: inline-flex;
+    gap: 0.25em;
+    padding: 0.3em;
+    border-radius: 999px;
+    background: var(--aster-fill);
+}
+
+.emby-tab-button {
+    border-radius: 999px;
+    padding: 0.55em 1.4em;
+    font-weight: 600;
+    color: var(--aster-text);
+    transition: background-color 120ms ease;
+}
+
+.emby-tab-button-active {
+    background: var(--aster-fill-hover);
+}
+
+.emby-tab-button:hover,
+.emby-tab-button.show-focus:focus {
+    background: #fff;
+    color: #000;
+}
+
+/* -------------------------------------------------------------------------
+ * 5. Cards
+ * Rounder corners (the --jf-card-borderRadius variable above), and a lift
+ * on hover in place of Jellyfin's outline.
+ * Targets .cardBox / .cardScalable (components/cardbuilder/card.scss).
+ * ---------------------------------------------------------------------- */
+
+.cardScalable,
+.cardImageContainer {
+    border-radius: var(--aster-radius);
+    overflow: hidden;
+}
+
+.card-hoverable .cardScalable {
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.card-hoverable:hover .cardScalable,
+.card-hoverable:focus-within .cardScalable {
+    transform: scale(1.04);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.cardText {
+    font-size: 0.92em;
+}
+
+.cardText-secondary {
+    color: var(--aster-text-secondary);
+}
+
+/* -------------------------------------------------------------------------
+ * 6. Title page (desktop and TV layouts)
+ * Full-screen backdrop behind everything, shaded from the left and the
+ * bottom, the title and buttons laid over it; no poster.
+ * Markup: apps/legacy/controllers/itemDetails/index.html.
+ * Phones keep Jellyfin's own layout, which already suits a narrow screen.
+ * ---------------------------------------------------------------------- */
+
+.layout-desktop .itemDetailPage .itemBackdrop,
+.layout-tv .itemDetailPage .itemBackdrop {
+    position: fixed;
+    inset: 0;
+    height: 100vh;
+    z-index: 0;
+}
+
+.layout-desktop .itemDetailPage .itemBackdrop::after,
+.layout-tv .itemDetailPage .itemBackdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to right, rgba(20, 20, 20, 0.85) 0%, rgba(20, 20, 20, 0.35) 45%, rgba(20, 20, 20, 0) 70%),
+        linear-gradient(to top, var(--aster-bg) 0%, rgba(20, 20, 20, 0.6) 35%, rgba(20, 20, 20, 0) 65%);
+}
+
+.layout-desktop .itemDetailPage .detailPageWrapperContainer,
+.layout-tv .itemDetailPage .detailPageWrapperContainer {
+    position: relative;
+    z-index: 1;
+    margin-top: 30vh;
+    background: transparent;
+}
+
+.layout-desktop .itemDetailPage .detailPagePrimaryContainer,
+.layout-tv .itemDetailPage .detailPagePrimaryContainer,
+.layout-desktop .itemDetailPage .detailPageSecondaryContainer,
+.layout-tv .itemDetailPage .detailPageSecondaryContainer,
+.itemDetailPage .detailRibbon {
+    background: transparent;
+}
+
+/* The app shows no poster on a title page. */
+.layout-desktop .itemDetailPage .detailImageContainer,
+.layout-tv .itemDetailPage .detailImageContainer {
+    display: none;
+}
+
+/* The app's title page uses text, not the clear logo, over the artwork. */
+.layout-desktop .itemDetailPage .detailLogo,
+.layout-tv .itemDetailPage .detailLogo {
+    display: none;
+}
+
+/* Series name above, large and grey; the title below, large and white. */
+.itemDetailPage .nameContainer .parentName {
+    font-size: 2.1em;
+    font-weight: 600;
+    color: var(--aster-text-secondary);
+    margin: 0 0 0.15em;
+}
+
+.itemDetailPage .nameContainer h1.itemName {
+    font-size: 3em;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.2em;
+}
+
+.itemDetailPage .nameContainer h3.itemName {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--aster-text);
+}
+
+.itemDetailPage .itemMiscInfo {
+    color: var(--aster-text-secondary);
+    font-size: 1.05em;
+}
+
+.itemDetailPage .itemOverview {
+    max-width: 52em;
+    font-size: 1.1em;
+    line-height: 1.45;
+}
+
+/* Buttons: one row of pills. */
+.itemDetailPage .mainDetailButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8em;
+    margin: 1em 0;
+}
+
+.itemDetailPage .mainDetailButtons .detailButton {
+    flex-direction: row;
+    min-height: 3.2em;
+    min-width: 3.2em;
+    padding: 0 1.1em !important;
+    border-radius: 999px;
+    background: var(--aster-fill);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    color: var(--aster-text);
+    transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.itemDetailPage .mainDetailButtons .detailButton:hover {
+    background: var(--aster-fill-hover);
+}
+
+.itemDetailPage .mainDetailButtons .detailButton.show-focus:focus {
+    background: #fff;
+    color: #000;
+    transform: scale(1.05);
+}
+
+/* Play and Resume: light, with their words beside the icon. The words are
+   Jellyfin's own (localised) button title. */
+.itemDetailPage .mainDetailButtons .btnPlay,
+.itemDetailPage .mainDetailButtons .btnReplay {
+    background: rgba(255, 255, 255, 0.88);
+    color: #000;
+    padding: 0 1.5em 0 1.2em !important;
+}
+
+.itemDetailPage .mainDetailButtons .btnPlay::after,
+.itemDetailPage .mainDetailButtons .btnReplay::after {
+    content: attr(title);
+    margin-left: 0.4em;
+    font-size: 1.15em;
+    font-weight: 600;
+}
+
+.itemDetailPage .mainDetailButtons .btnPlay:hover,
+.itemDetailPage .mainDetailButtons .btnReplay:hover {
+    background: #fff;
+}
+
+/* Cast & Crew: round photos, names centred under them.
+   #castContent holds "overflowPortrait" cards; their padder sets a 2:3
+   shape, made square here. */
+#castContent .cardPadder-overflowPortrait {
+    padding-bottom: 100%;
+}
+
+#castContent .cardScalable,
+#castContent .cardImageContainer {
+    border-radius: 50%;
+}
+
+#castContent .cardText {
+    text-align: center;
+}
+
+/* -------------------------------------------------------------------------
+ * 7. Live TV guide
+ * Rounded cells with gaps between them, a white highlight on focus, as in
+ * the app's guide. Targets components/guide/guide.scss.
+ * The cells are positioned by Jellyfin with inline sizes, so the gaps come
+ * from a transparent border rather than margins.
+ * ---------------------------------------------------------------------- */
+
+.programGrid .programCell,
+.guide-channelHeaderCell {
+    border: 3px solid transparent !important;
+    background-clip: padding-box !important;
+    border-radius: 14px;
+    background-color: var(--aster-fill);
+}
+
+.programGrid .programCell.programCell-active {
+    background-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Jellyfin colours sport, film, children's and news programmes; the app
+   doesn't. Remove this block to keep Jellyfin's colours. */
+.programCell-sports,
+.programCell-movie,
+.programCell-kids,
+.programCell-news {
+    background-color: var(--aster-fill) !important;
+}
+
+.guide-channelHeaderCell:focus,
+.programCell:focus {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+.guideProgramName {
+    font-weight: 600;
+}
+
+.guideProgramSecondaryInfo {
+    color: var(--aster-text-secondary);
+}
+
+.programCell:focus .guideProgramSecondaryInfo {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.timeslotHeader {
+    font-size: 1.15em;
+    font-weight: 600;
+}
+
+/* -------------------------------------------------------------------------
+ * 8. Scrollbars
+ * Thin and quiet.
+ * ---------------------------------------------------------------------- */
+
+* {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
