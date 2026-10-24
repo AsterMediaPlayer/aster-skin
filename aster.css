@@ -118,6 +118,13 @@ html.au-scrolled body .MuiAppBar-root.MuiAppBar-colorDefault.MuiPaper-root {
     background: var(--aster-fill-hover);
 }
 
+/* A ticked checkbox fills with the accent, and Jellyfin draws the tick in
+   white, so with the white accent a ticked box was a blank white square.
+   The tick takes the accent's contrast colour instead. */
+.emby-checkbox:checked + span + .checkboxOutline > .checkboxIcon {
+    color: var(--jf-palette-primary-contrastText, #000);
+}
+
 /* -------------------------------------------------------------------------
  * 4. Tabs as a segmented control
  * The pill-shaped switcher at the top of Live TV in the app.
