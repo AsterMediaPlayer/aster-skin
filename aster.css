@@ -60,15 +60,12 @@
 /* -------------------------------------------------------------------------
  * 2. Type
  * The system font (San Francisco on Apple devices), as the app uses.
- * Icon fonts keep their own family through their more specific classes.
+ * Jellyfin's newer (MUI) parts set "Noto Sans" on each element rather than
+ * inheriting it, so every element is reached here, except the icon fonts.
  * ---------------------------------------------------------------------- */
 
-html,
 body,
-button,
-input,
-select,
-textarea {
+body *:not(.material-icons):not([class*="material-icons-"]):not(.MuiIcon-root) {
     font-family: var(--aster-font) !important;
 }
 
@@ -181,7 +178,7 @@ textarea {
 .layout-tv .itemDetailPage .detailPageWrapperContainer {
     position: relative;
     z-index: 1;
-    margin-top: 30vh;
+    margin-top: 26vh;
     background: transparent;
 }
 
@@ -193,16 +190,48 @@ textarea {
     background: transparent;
 }
 
-/* The app shows no poster on a title page. */
+/* The app shows no poster on a title page, so the room Jellyfin keeps for
+   it (32.45vw, on the ribbon and on .detailPagePrimaryContent) goes too,
+   and everything lines up on the page's normal left margin. */
 .layout-desktop .itemDetailPage .detailImageContainer,
 .layout-tv .itemDetailPage .detailImageContainer {
     display: none;
 }
 
-/* The app's title page uses text, not the clear logo, over the artwork. */
-.layout-desktop .itemDetailPage .detailLogo,
-.layout-tv .itemDetailPage .detailLogo {
-    display: none;
+html.layout-desktop .itemDetailPage .detailRibbon,
+html.layout-tv .itemDetailPage .detailRibbon {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    margin-top: 0;
+    padding-left: max(3.3%, env(safe-area-inset-left)) !important;
+    padding-right: max(3.3%, env(safe-area-inset-right)) !important;
+}
+
+html.layout-desktop .itemDetailPage .detailPagePrimaryContent,
+html.layout-tv .itemDetailPage .detailPagePrimaryContent {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* The clear logo sits above the title, on the left, as in the app. */
+html.layout-desktop .itemDetailPage .detailLogo,
+html.layout-tv .itemDetailPage .detailLogo {
+    top: 12vh;
+    left: max(3.3%, env(safe-area-inset-left));
+    right: auto;
+    width: 30vw;
+    height: 16vh;
+    z-index: 1;
+    background-position: left bottom;
+}
+
+html.layout-desktop [dir="rtl"] .itemDetailPage .detailLogo,
+html.layout-tv [dir="rtl"] .itemDetailPage .detailLogo {
+    left: auto;
+    right: max(3.3%, env(safe-area-inset-right));
+    background-position: right bottom;
 }
 
 /* Series name above, large and grey; the title below, large and white. */
@@ -245,12 +274,14 @@ textarea {
     margin: 1em 0;
 }
 
+/* Icon buttons are circles. */
 .itemDetailPage .mainDetailButtons .detailButton {
     flex-direction: row;
-    min-height: 3.2em;
-    min-width: 3.2em;
-    padding: 0 1.1em !important;
-    border-radius: 999px;
+    justify-content: center;
+    width: 3.2em;
+    height: 3.2em;
+    padding: 0 !important;
+    border-radius: 50%;
     background: var(--aster-fill);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
@@ -268,13 +299,15 @@ textarea {
     transform: scale(1.05);
 }
 
-/* Play and Resume: light, with their words beside the icon. The words are
-   Jellyfin's own (localised) button title. */
+/* Play and Resume: a white pill, with their words beside the icon. The
+   words are Jellyfin's own (localised) button title. */
 .itemDetailPage .mainDetailButtons .btnPlay,
 .itemDetailPage .mainDetailButtons .btnReplay {
-    background: rgba(255, 255, 255, 0.88);
+    width: auto;
+    border-radius: 999px;
+    background: #fff;
     color: #000;
-    padding: 0 1.5em 0 1.2em !important;
+    padding: 0 1.5em 0 1.1em !important;
 }
 
 .itemDetailPage .mainDetailButtons .btnPlay::after,
@@ -287,22 +320,28 @@ textarea {
 
 .itemDetailPage .mainDetailButtons .btnPlay:hover,
 .itemDetailPage .mainDetailButtons .btnReplay:hover {
-    background: #fff;
+    background: #e8e8e8;
 }
 
-/* Cast & Crew: round photos, names centred under them.
-   #castContent holds "overflowPortrait" cards; their padder sets a 2:3
-   shape, made square here. */
-#castContent .cardPadder-overflowPortrait {
-    padding-bottom: 100%;
+/* Cast & Crew (and guest stars, and people anywhere else): round photos,
+   names centred under them. People cards carry .personCard
+   (components/cardbuilder/peoplecardbuilder.js); their padder sets a 2:3
+   shape, made square here so the circle isn't an oval. */
+.personCard .cardPadder {
+    padding-bottom: 100% !important;
 }
 
-#castContent .cardScalable,
-#castContent .cardImageContainer {
-    border-radius: 50%;
+.personCard .cardScalable,
+.personCard .cardImageContainer {
+    border-radius: 50% !important;
+    overflow: hidden;
 }
 
-#castContent .cardText {
+.personCard .cardImageContainer {
+    background-position: center 20%;
+}
+
+.personCard .cardText {
     text-align: center;
 }
 

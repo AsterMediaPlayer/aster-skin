@@ -12,7 +12,9 @@ Paste this line into **Dashboard ▸ General ▸ Branding ▸ Custom CSS** (ever
 @import url("https://cdn.jsdelivr.net/gh/AsterMediaPlayer/aster-skin@main/aster.css");
 ```
 
-Then reload the page. It works with any of Jellyfin's built-in themes, but looks as intended with **Dark**.
+Then reload the page.
+
+jsDelivr only serves **public** GitHub repositories. While this repository is private, that line loads nothing; paste the whole of `aster.css` into the Custom CSS box instead. It works with any of Jellyfin's built-in themes, but looks as intended with **Dark**.
 
 jsDelivr caches files from a branch for a while, so a change pushed here can take some time to reach you. Once there are tagged releases, pin one instead of `@main` (for example `aster-skin@v0.1.0`) so an update never changes your server's look by surprise.
 
