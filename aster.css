@@ -234,10 +234,13 @@ html.layout-tv .itemDetailPage :is(.detailPagePrimaryContainer, .detailPagePrima
 
 /* 1 title and buttons; 2 track pickers; 3 overview; 4 Next Up;
    5 Episodes and other child lists; 6 details; 7 people, studios, genres;
-   8 everything in the secondary container (cast, more like this, ...). */
+   8 everything in the secondary container (cast, more like this, ...).
+   Anything else added to the primary container (a plugin's section, such
+   as an Episodes row with season chips) takes 5, under the overview, so
+   only Jellyfin's own detail blocks are named for 6. */
 .itemDetailPage .detailPageSecondaryContainer > * { order: 8; }
-.itemDetailPage .detailSectionContent > * { order: 6; }
-.itemDetailPage .detailSection > * { order: 6; }
+.itemDetailPage :is(.detailPagePrimaryContainer, .detailPagePrimaryContent, .detailSection, .detailSectionContent) > * { order: 5; }
+.itemDetailPage .detailSectionContent > :is(#itemBirthday, #itemBirthLocation, #itemDeathDate, #seriesAirTime, .itemTags, .itemExternalLinks, .seriesRecordingEditor) { order: 6; }
 .itemDetailPage .detailRibbon { order: 1; }
 .itemDetailPage .trackSelections,
 .itemDetailPage .recordingFields { order: 2; }
