@@ -249,6 +249,12 @@ html.layout-tv .itemDetailPage :is(.detailPagePrimaryContainer, .detailPagePrima
 .itemDetailPage :is(#childrenCollapsible, #listChildrenCollapsible, #seriesTimerScheduleSection, .programGuideSection, .collectionItems) { order: 5; }
 .itemDetailPage .itemDetailsGroup { order: 7; }
 
+/* Empty genre and tagline lines keep their margins, which opened a gap
+   between the buttons and the overview. */
+.itemDetailPage .detailSectionContent > :is(.itemGenres, .tagline, #itemBirthday, #itemBirthLocation, #itemDeathDate, #seriesAirTime):empty {
+    display: none;
+}
+
 /* The clear logo sits above the title, on the left, as in the app. */
 html.layout-desktop .itemDetailPage .detailLogo,
 html.layout-tv .itemDetailPage .detailLogo {
